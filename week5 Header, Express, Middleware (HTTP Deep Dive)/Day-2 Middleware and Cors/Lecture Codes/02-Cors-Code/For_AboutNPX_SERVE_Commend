@@ -1,0 +1,16 @@
+1->if you use comend =  'npx serve ' ,
+    then you can share or serve your files or folders (where you called that commend ) in like a intera-net, make sure that ->connect with the same wifi or internet connection
+
+
+
+2->if we run frontend and backend on the same post or host(domain) then we dont need cors
+  We can use like ,
+         
+         app.post("/", function(req, res){ 
+            res.sendFile(_dirname + "./public/index.html");
+         });
+
+
+         that code means when someone come to '/' then send them that index.html file 
+
+   

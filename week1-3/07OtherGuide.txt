@@ -1,0 +1,13 @@
+********      #!/bin/bash        ********* 
+
+This tells the system to use the Bash shell located at /bin/bash to execute your script.
+#!/bin/bash
+is called the shebang (or hashbang) and should be the very first line in your Bash script
+— no blank lines or spaces before it.
+
+
+
+EXAMPLE. 
+        #!/bin/bash
+        echo "Hello, world!"
+        

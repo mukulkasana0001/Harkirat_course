@@ -1,0 +1,51 @@
+Notes:
+1. Here we learned about Node.js and Bun, how how js code can execute in browser as well as in our local system as node.js help us doing this so!
+2. We create a 'package.json' file using this command 'pm init -y' in teminal.
+3. After that we had created a new file named 'index.mjs' advanced version of js file
+4. We install another dependcy i.e 'chalk' using command 'npm install chalk' ....an extra node module is added here after installing is completed.
+5. Node.js provides you some `packages` out of the box. Some common ones include :
+        i. fs - Filesystem
+        ii. path - Path related functions
+6. External packages - These are packages written and maintained by other people. You just use their work in your project. For example : 
+        i. Express
+        ii. chalk
+7. Whenever we are going to push codes in github we will ignore the node module as its too heavy rather we will puch the folder where dependencies are included and if we just type 'node install' it will just install all the dependencies by itself from the dependencies file present.
+
+
+Notes for package.json file :
+1."name": "day-1", - Name of website/library/app       
+2. "version": "1.0.0", - current version
+3. "main": "index.js", - Entrypoint
+4. "scripts": {             
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+    - Developer speciifed script - isko hm apne hisb se likh skte like test ke jgah start and us start pe - "start": node index.mjs; jo jaise hi npm run start krenge toh woh file run hoga agar hmlg ekdm sahi folder mein honge toh!
+
+
+
+
+
+
+############
+Great question! 
+###########
+Just like JavaScript (Node.js) uses package.json to manage dependencies and metadata,
+ other languages have their own project configuration files or dependency management systems. 
+Here's a comparison:
+
+🔧 Common Project Files in Different Languages
+
+Language         | File/Tool                          | Purpose
+-----------------|------------------------------------|-------------------------------------------------------------
+JavaScript (Node.js) | package.json                    | Lists dependencies, scripts, project info
+Python           | requirements.txt / pyproject.toml / setup.py | Lists packages to install (modern uses pyproject.toml with Poetry)
+Java             | pom.xml (Maven) / build.gradle (Gradle) | Build configuration, dependencies, plugins
+C/C++            | Makefile (Make) / CMakeLists.txt (CMake) | Build instructions, dependencies
+Rust             | Cargo.toml                         | Dependencies, version, project metadata
+Go (Golang)      | go.mod                             | Module name, dependencies, versions
+PHP              | composer.json                      | Dependency management with Composer
+Ruby             | Gemfile / Gemfile.lock             | Defines gem dependencies (Bundler)
+.NET (C#, F#)    | .csproj / .fsproj                  | Defines project structure and dependencies (MSBuild)
+Swift            | Package.swift                      | Swift Package Manager manifest file
+Dart/Flutter     | pubspec.yaml                       | Metadata and dependencies
+
