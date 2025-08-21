@@ -11,7 +11,7 @@ function App() {
             <BrowserRouter>
                 <Routes>
                     {/* Define a layout route to include a common layout structure (nav, footer) for all child routes */}
-                    <Route path="/neet" element={<Layout />}>
+                    <Route path="/" element={<Layout/>}>
                         <Route path="/neet" element={<Landing />} /> {/* Define the route for the landing page */}
                         <Route path="/neet/online-coaching-class-11" element={<Class11Program />} /> {/* Define the route for the NEET Class 11 program page */}
                         <Route path="/neet/online-coaching-class-12" element={<Class12Program />} /> {/* Define the route for the NEET Class 12 program page */}
