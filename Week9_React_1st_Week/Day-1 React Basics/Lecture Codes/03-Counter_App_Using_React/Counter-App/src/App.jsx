@@ -9,7 +9,7 @@ function App() {
 
   // Defining a function that handles the button click event.
   function onClickHandler() {
-
+ 
     // Updating the state 'count' by incrementing its value by 1.
     setCount(count + 1);
   }
