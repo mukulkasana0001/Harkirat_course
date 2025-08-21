@@ -1,0 +1,4 @@
+###   IT IS TRUE ABOUT useEffect   ###
+
+The code we written in useEffect is run at the time of mounting and ignore during re-rendering and
+function we written in the useEffect is called at the time of unmounting.
