@@ -59,3 +59,14 @@ function ToggleBulbState({ bulbOn, setBulbOn }) {
 
 // Export the App component so it can be used in other files
 export default App;
+
+
+
+//  ***** Rolling up the state, unoptimal re-renders.
+
+// When you "lift state up" (rolling up the state) to a parent so multiple children can share/update it,
+//  you sometimes get unnecessary re-renders, because any state change in the parent re-renders all children, even if only one child needed it
+
+
+// Only lift state to the lowest common ancestor of the components that actually need it.
+// Don’t keep everything in the top parent unless necessary.
