@@ -26,7 +26,7 @@ function Todo({id}) {
   if (todo.state === 'loading') {
     // If the state is loading, display a loading message
     return <div>Loading...</div>;
-  } else if (todo.state === 'hasValue') {
+  } else if (todo.state === 'hasValue') { //also have 'hasError' 
     // If the state is 'hasValue', display the fetched todo's title and description
     return (
       <div>

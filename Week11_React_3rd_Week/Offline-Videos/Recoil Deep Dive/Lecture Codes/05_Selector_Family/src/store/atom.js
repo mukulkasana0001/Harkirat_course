@@ -21,3 +21,18 @@ export const todosAtomFamily = atomFamily({
         },
     })
 });
+
+
+
+
+
+
+
+//   ****In the above get is like , its a function which return another function  and which return whatever....    , (so its like as  previous we learn that in AtomFamily which has  atoms inside it so same as that selectorFamily -> in this case in first function first we target like a particular atom by id and then perform async operation on it (becouse we can not do async operation on atom we we require selector for perforn async operation) )
+
+//  get: (id) => async () => { 
+//                 const response = await axios.get(
+//                     `https://jsonplaceholder.typicode.com/todos/${id}`
+//                 );
+//                 return response.data;
+//         }
