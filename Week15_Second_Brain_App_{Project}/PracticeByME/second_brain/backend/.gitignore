@@ -1,0 +1,22 @@
+# Ignore node_modules folder
+node_modules/
+
+# Ignore environment variables file
+.env
+
+# Ignore build or dist folders
+dist/
+build/
+
+# Ignore logs
+*.log
+
+# Ignore OS generated files
+.DS_Store
+Thumbs.db
+
+# Ignore TypeScript output
+*.tsbuildinfo
+
+process.env
+.env
