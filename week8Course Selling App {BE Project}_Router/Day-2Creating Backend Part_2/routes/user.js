@@ -86,6 +86,7 @@ userrouter.get('/purchases',usermiddle,async (req,res)=>{
 
 })
 
+
 module.exports={
     userrouter
 }
