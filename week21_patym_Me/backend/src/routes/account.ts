@@ -20,13 +20,15 @@ accountRouter.get('/balance', authenticate, async (req, res) => {
                 userId: parseInt(userId)
             },
             include: {
-                user:true}
+                user: true
+            }
         });
         if (!account) {
             return res.status(404).json({ message: "Account not found" });
         }
-        res.status(200).json({ balance: account.balance ,
-        username: account.user.username
+        res.status(200).json({
+            balance: account.balance,
+            username: account.user.username
         });
     } catch (error) {
         console.log(error);
@@ -91,7 +93,32 @@ accountRouter.put('/transfer', authenticate, async (req, res) => {
                     userId: to,
                 },
             })
+
+
+            const r = await tx.history.create({
+                data: {
+                    userId: from,
+                    type: "DEBIT",
+                    amount: amount,
+                    // optional: description, recipientId
+                },
+
+            });
+
+            //   //  Add history for receiver (CREDIT)
+            const s = await tx.history.create({
+                data: {
+                    userId: to,
+                    type: "CREDIT",
+                    amount: amounts,
+                    // optional: description, senderId
+                },
+            });
+
+
+
         })
+
 
         res.status(200).json({ message: `Transfer successful ` });
     }
@@ -106,6 +133,41 @@ accountRouter.put('/transfer', authenticate, async (req, res) => {
 
 
 });
+
+
+accountRouter.get('/history', authenticate, async (req, res) => {
+    const userId = req.userId;
+
+
+    if (userId) {
+        try {
+            const history = await client.history.findMany({
+                where: {
+                    userId: parseInt(userId)
+                }
+            })
+
+            res.status(200).json({
+                history
+            })
+        }catch(e:any){
+             console.log(e);
+             res.status(404).json({
+                error:e.message
+             })
+        }
+
+    }else{
+         res.status(200).json({
+                message:"No transaction History"
+            })
+    }
+
+
+
+})
+
+
 
 
 

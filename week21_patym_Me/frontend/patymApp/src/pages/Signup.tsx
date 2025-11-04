@@ -1,12 +1,15 @@
-import { useRef } from "react"
+import { useRef, useState } from "react"
 import { BottomWarning } from "../components/BottomWarning"
 import { Button } from "../components/Button"
 import { Heading } from "../components/Heading"
 import { InputBox } from "../components/InputBox"
 import { SubHeading } from "../components/SubHeading"
 import axios from  'axios'
+import { useNavigate } from "react-router-dom"
 
 export const Signup = () => {
+  const [signup,setsighup]=useState("Sign Up")
+  const navigator= useNavigate()
 
   const firstName = useRef<HTMLInputElement>(null);
     const lastName = useRef<HTMLInputElement>(null);
@@ -25,7 +28,8 @@ export const Signup = () => {
         <InputBox refrence={userName}placeholder="harkiratSingh" label={"userNmae"} />
         <InputBox refrence={Password}placeholder="123456" label={"Password"} />
         <div className="pt-4">
-          <Button label={"Sign up"} onClick={async()=>{
+          <Button label={signup} onClick={async()=>{
+              setsighup((x)=>x=".....")
               const  firstname=firstName.current?.value
                const  lastname= lastName.current?.value
                const  username=userName.current?.value
@@ -41,6 +45,8 @@ export const Signup = () => {
              console.log(response);
             const token = response.data.token
             localStorage.setItem("token",token)
+          setsighup((x)=>x="Sign Up")
+            navigator('/')
           }
           catch (error) {
             console.error('There was an error!', error);  

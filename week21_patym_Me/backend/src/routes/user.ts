@@ -36,12 +36,14 @@ userRouter.post('/signup', async (req, res) => {
                 firstname: firstname,
                 lastname: lastname,
                 password: hashedPasspord,
-                account: {create: {
-                    balance: Number((Math.random() * 10000).toFixed(2))
-                }    
+                account: {
+                    create: {
+                        balance: Number((Math.random() * 10000).toFixed(2))
+                    }
 
+                }
             }
-        }});
+        });
 
         const token = jwt.sign({
             userId: user.id
@@ -106,7 +108,16 @@ userRouter.put('/', authenticate, async (req, res) => {
         const hashedPasspord = await bcrypt.hash(password, 6)
         updatedData.password = hashedPasspord;
     }
+
+    // if (Object.keys(updatedData).length === 0) {
+    //     return res.status(400).json({ message: "No fields provided to update" });
+    // }
     try {
+        if (Object.keys(updatedData).length === 0) {
+           const error = new Error("No fields provided to update");
+            (error as any).statusCode = 400;
+             throw error;
+        }
         const updatedUser = await client.user.update({
             where: {
                 id: Number(userId),
@@ -115,16 +126,27 @@ userRouter.put('/', authenticate, async (req, res) => {
         });
         console.log(updatedUser);
 
+        return res.status(200).json({
+    message: "User updated successfully",
+    user: {
+      id: updatedUser.id,
+      firstname: updatedUser.firstname,
+      lastname: updatedUser.lastname,
+    },
+  });
+
     }
-    catch (error) {
+    catch (error:any) {
         console.log(error);
-        return res.status(500).json({
-        });
+        const statusCode = error.statusCode || 500;
+
+        const message = error.statusCode === 400 ? error.message : "Internal server error";
+        return res.status(statusCode).json({ message });
     }
 
-    res.status(200).json({
-        message: "User updated successfully"
-    });
+    // res.status(200).json({
+    //     message: "User updated successfully"
+    // });
 
 })
 
@@ -138,36 +160,39 @@ userRouter.get('/all', authenticate, async (req, res) => {
 
     try {
         const users = await client.user.findMany({
-            where:  username ? {
-                AND : [ 
+            where: username ? {
+                AND: [
                     {
-                     id: { not: Number(userId) }}, // exclude current user
-                   { username: {
-                        contains: String(username),   // match usernames that include given text
-                        mode: 'insensitive',           // make search case-insensitive
-                    }}
+                        id: { not: Number(userId) }
+                    }, // exclude current user
+                    {
+                        username: {
+                            contains: String(username),   // match usernames that include given text
+                            mode: 'insensitive',           // make search case-insensitive
+                        }
+                    }
                 ]
-                } : {id:{not: Number(userId)}} ,   //If no username is provided :  It simply excludes the current user.
+            } : { id: { not: Number(userId) } },   //If no username is provided :  It simply excludes the current user.
             select: {
                 id: true,
                 username: true,
                 firstname: true,
                 lastname: true,
             }
-        }  
-         
+        }
+
         );
         return res.status(200).json({
             users
         });
     }
 
-catch (error) {
-    console.log(error);
-    return res.status(500).json({
-        message: "Internal server error"
-    });
-}
+    catch (error) {
+        console.log(error);
+        return res.status(500).json({
+            message: "Internal server error"
+        });
+    }
 });
 
 

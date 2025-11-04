@@ -28,7 +28,7 @@ export const SendMoney = () => {
             }).then((res) => {
                 alert("Transfer Successful",);
                 console.log(res.data);
-                nevigator('/dashbord')
+                nevigator('/')
             }).catch((err) => {
                 alert("Transfer Failed");
                 console.log(err);

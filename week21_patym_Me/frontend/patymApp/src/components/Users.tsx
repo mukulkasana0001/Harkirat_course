@@ -2,12 +2,16 @@ import { useEffect, useState } from "react"
 import { Button } from "./Button"
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { usetansactionhistory } from "../customhook/usetransactionhistory";
 
 export const Users = () => {
     // Replace with backend call
- type UserType = {
-      id:number,
-    username: string,
+    const {transactions,gettransaction}= usetansactionhistory();
+
+     const nevigator = useNavigate();
+    type UserType = {
+        id: number,
+        username: string,
         firstname: string,
         lastname: string
     }
@@ -16,40 +20,47 @@ export const Users = () => {
 
     const [value, setValue] = useState("");
 
-      useEffect(() => {
-            //   debouncing 
-          const  timeout = setTimeout(() => {
+    useEffect(() => {
+        //   debouncing 
+        const timeout = setTimeout(() => {
 
-                axios.get(`http://localhost:3000/api/v1/user/all?username=${value}`,{
-                    headers:{
-                        "token":localStorage.getItem("token") 
-                }}
-            ).then((res)=>{
+            axios.get(`http://localhost:3000/api/v1/user/all?username=${value}`, {
+                headers: {
+                    "token": localStorage.getItem("token")
+                }
+            }
+            ).then((res) => {
                 setUsers(res.data.users);
-            }).catch((err)=>{
+            }).catch((err) => {
                 console.log(err);
             });
 
-            }, 500);
+        }, 500);
 
         return () => clearTimeout(timeout);
-          
-       }, [value]);
-     
+
+    }, [value]);
+
     return <>
-        <div className="font-bold mt-6 text-lg">
-            Users
+        <div className="flex max-w-screen-xl justify-between ">
+            <div className="font-bold mt-6 text-lg   ">
+                Users
+            </div>
+            <div className="font-bold mt-6 flex    text-lg">
+                <Button label={"See Transaction"}  onOver={()=>{gettransaction()}}  onClick={()=>{nevigator('/history',{state:transactions})}}/>
+            </div>
         </div>
+
         <div className="my-2">
-            <input onChange={(e)=>setValue(e.target.value)} type="text" placeholder="Search users..." className="w-full px-2 py-1 border rounded border-slate-200"></input>
+            <input onChange={(e) => setValue(e.target.value)} type="text" placeholder="Search users..." className="w-full px-2 py-1 border rounded border-slate-200"></input>
         </div>
-        <div>
-            {users.map(user => <User user={user} />)}
+        <div >
+            {users.map(user => <User key={user.id} user={user} />)}
         </div>
     </>
 }
 
-function User({user} :{user: {id:number,username:string,firstname:string, lastname:string }}) {
+function User({ user }: { user: { id: number, username: string, firstname: string, lastname: string } }) {
 
 
     const nevigator = useNavigate();
@@ -57,7 +68,7 @@ function User({user} :{user: {id:number,username:string,firstname:string, lastna
         <div className="flex">
             <div className="rounded-full h-12 w-12 bg-slate-200 flex justify-center mt-1 mr-2">
                 <div className="flex flex-col justify-center h-full text-xl">
-                    {user.firstname[0]}
+                    {user.firstname[0]?.toUpperCase()}
                 </div>
             </div>
             <div className="flex flex-col justify-center h-ful">
@@ -68,8 +79,8 @@ function User({user} :{user: {id:number,username:string,firstname:string, lastna
         </div>
 
         <div className="flex flex-col justify-center h-ful">
-            <Button label={"Send Money"}  onClick={()=>{
-                nevigator('/Sendmoney',{state:{ username:user.username ,id: user.id}})
+            <Button label={"Send Money"} onClick={() => {
+                nevigator('/Sendmoney', { state: { username: user.username, id: user.id } })
             }} />
         </div>
     </div>

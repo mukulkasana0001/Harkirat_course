@@ -1,5 +1,5 @@
 type BalanceProps = {
-    value: number;
+    value: number|undefined;
 }   
 
 
@@ -9,7 +9,7 @@ export const Balance = ({ value }:BalanceProps) => {
             Your balance
         </div>
         <div className="font-semibold ml-4 text-lg">
-            Rs {value}
+            Rs {value==undefined?"....":value}
         </div>
     </div>
 }

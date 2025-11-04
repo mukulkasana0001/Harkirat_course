@@ -23,6 +23,7 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   account   Account?
+  history History[]
 }
 
 model Account{
@@ -32,4 +33,11 @@ model Account{
   user  User     @relation(fields: [userId], references: [id])
 }
 
-
+model History{
+  id    Int      @id @default(autoincrement())
+  userId Int 
+  date    DateTime @default(now()) 
+  type String  
+  amount Decimal  @db.Decimal(10, 2) 
+  user User @relation(fields: [userId],references: [id])
+}
