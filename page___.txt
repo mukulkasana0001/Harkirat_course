@@ -1,0 +1,106 @@
+// Sample data (replace with your actual data, e.g., from an API call)
+const dataSet = Array.from({ length: 100 }, (a, i) => `Item ${i + 1}`);
+// const dataSet = ["mukul","ghj","ghj","hjk",]
+
+const itemsPerPage = 10;
+let currentPage = 1;
+
+const dataList = document.getElementById('data-list');
+const paginationContainer = document.getElementById('pagination-container');
+
+// Function to display data for the current page
+function displayPage(page) {
+    currentPage = page;
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    const currentItems = dataSet.slice(startIndex, endIndex);
+
+    dataList.innerHTML = ''; // Clear current list
+    currentItems.forEach(item => {
+        const li = document.createElement('li');
+        li.textContent = item;
+        dataList.appendChild(li);
+    });
+}
+
+// Function to set up pagination buttons
+function setupPagination() {
+    paginationContainer.innerHTML = ''; // Clear current pagination
+    const pageCount = Math.ceil(dataSet.length / itemsPerPage);
+
+    // Previous button
+    const prevButton = document.createElement('button');
+    prevButton.textContent = 'Previous';
+    prevButton.className = `px-3 py-2 mx-1 rounded-md text-sm font-medium ${
+        currentPage === 1 ? 'opacity-50 cursor-not-allowed' : 'bg-blue-500 text-white hover:bg-blue-600'
+    }`;
+    prevButton.addEventListener('click', () => {
+        if (currentPage > 1) {
+            displayPage(currentPage - 1);
+            setupPagination();
+        }
+    });
+    paginationContainer.appendChild(prevButton);
+
+    // // Page numbers
+    // for (let i = currentPage; i <= currentPage &&i<=pageCount; i++) {
+    //     const button = document.createElement('button');
+    //     button.textContent = i;
+    //     button.className = `px-3 py-2 mx-1 rounded-md text-sm font-medium ${
+    //         i === currentPage ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+    //     }`;
+    //     button.addEventListener('click', () => {
+    //         displayPage(i);
+    //         setupPagination();
+    //     });
+    //     paginationContainer.appendChild(button);
+    // }
+
+    // Next button
+    const nextButton = document.createElement('button');
+    nextButton.textContent = 'Next';
+    nextButton.className = `px-3 py-2 mx-1 rounded-md text-sm font-medium ${
+        currentPage === pageCount ? 'opacity-50 cursor-not-allowed' : 'bg-blue-500 text-white hover:bg-blue-600'
+    }`;
+    nextButton.addEventListener('click', () => {
+        if (currentPage < pageCount) {
+            displayPage(currentPage + 1);
+            setupPagination();
+        }
+    });
+    paginationContainer.appendChild(nextButton);
+}
+
+// Initial load
+displayPage(1);
+setupPagination();
+
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JS Tailwind Pagination</title>
+    <!-- Include Tailwind CSS from CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="p-4">
+    <h1 class="text-2xl font-bold mb-4">Paginated Data List</h1>
+    <ul id="data-list" class=" pl-5 mb-4">
+        <!-- List items will be injected here by JavaScript -->
+    </ul>
+    
+    <div id="pagination-container" class="flex justify-center items-center gap-x-1">
+        <!-- Pagination buttons will be injected here by JavaScript -->
+    </div>
+
+    <script src="page.js"></script>
+</body>
+</html>
