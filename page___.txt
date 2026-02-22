@@ -1,79 +1,81 @@
-// Sample data (replace with your actual data, e.g., from an API call)
-const dataSet = Array.from({ length: 100 }, (a, i) => `Item ${i + 1}`);
-// const dataSet = ["mukul","ghj","ghj","hjk",]
+/////common file
+// const paginationContainer = document.getElementById('pagination-container');
 
-const itemsPerPage = 10;
-let currentPage = 1;
+// const  paginationInFO = {
+//  itemsPerPage :5,
+//  currentPage : 1,
+// }
 
-const dataList = document.getElementById('data-list');
-const paginationContainer = document.getElementById('pagination-container');
+import { paginationContainer, paginationInFO } from "./common.js";
+import { updateTableUI } from "./updateTableUI.js";
+
+
 
 // Function to display data for the current page
-function displayPage(page) {
-    currentPage = page;
-    const startIndex = (currentPage - 1) * itemsPerPage;
-    const endIndex = startIndex + itemsPerPage;
-    const currentItems = dataSet.slice(startIndex, endIndex);
+function displayPage(page, DataTOSeprate) {
+    paginationInFO.currentPage = page;
+    const startIndex = (paginationInFO.currentPage - 1) * paginationInFO.itemsPerPage;
+    const endIndex = startIndex + paginationInFO.itemsPerPage;
+    const currentItems = DataTOSeprate.slice(startIndex, endIndex);
 
-    dataList.innerHTML = ''; // Clear current list
-    currentItems.forEach(item => {
-        const li = document.createElement('li');
-        li.textContent = item;
-        dataList.appendChild(li);
-    });
+    updateTableUI(currentItems)
 }
 
 // Function to set up pagination buttons
-function setupPagination() {
+function setupPagination(DataTOSeprate) {
     paginationContainer.innerHTML = ''; // Clear current pagination
-    const pageCount = Math.ceil(dataSet.length / itemsPerPage);
+    const pageCount = Math.ceil(DataTOSeprate.length / paginationInFO.itemsPerPage);
 
     // Previous button
     const prevButton = document.createElement('button');
     prevButton.textContent = 'Previous';
-    prevButton.className = `px-3 py-2 mx-1 rounded-md text-sm font-medium ${
-        currentPage === 1 ? 'opacity-50 cursor-not-allowed' : 'bg-blue-500 text-white hover:bg-blue-600'
-    }`;
+    prevButton.className = `px-3 py-2 mx-1 rounded-md text-sm font-medium ${paginationInFO.currentPage === 1 ? 'opacity-50 cursor-not-allowed' : 'bg-blue-500 text-white hover:bg-blue-600'
+        }`;
     prevButton.addEventListener('click', () => {
-        if (currentPage > 1) {
-            displayPage(currentPage - 1);
-            setupPagination();
+        if (paginationInFO.currentPage > 1) {
+            displayPage(paginationInFO.currentPage - 1, DataTOSeprate);
+            setupPagination(DataTOSeprate);
         }
     });
     paginationContainer.appendChild(prevButton);
 
-    // // Page numbers
-    // for (let i = currentPage; i <= currentPage &&i<=pageCount; i++) {
-    //     const button = document.createElement('button');
-    //     button.textContent = i;
-    //     button.className = `px-3 py-2 mx-1 rounded-md text-sm font-medium ${
-    //         i === currentPage ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-    //     }`;
-    //     button.addEventListener('click', () => {
-    //         displayPage(i);
-    //         setupPagination();
-    //     });
-    //     paginationContainer.appendChild(button);
-    // }
+
+    //     Adding of
+    const pageno = document.createElement('button');
+    pageno.textContent = ` page ${pageCount} of`;
+    paginationContainer.appendChild(pageno);
+
+    // Page numbers
+    for (let i = paginationInFO.currentPage; i <= paginationInFO.currentPage && i <= pageCount; i++) {
+        const button = document.createElement('button');
+        button.textContent = i;
+        button.className = `px-3 py-2 mx-1 rounded-md text-sm font-medium ${i === paginationInFO.currentPage ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+            }`;
+        button.addEventListener('click', () => {
+            displayPage(i, DataTOSeprate);
+            setupPagination(DataTOSeprate);
+        });
+        paginationContainer.appendChild(button);
+    }
 
     // Next button
     const nextButton = document.createElement('button');
     nextButton.textContent = 'Next';
-    nextButton.className = `px-3 py-2 mx-1 rounded-md text-sm font-medium ${
-        currentPage === pageCount ? 'opacity-50 cursor-not-allowed' : 'bg-blue-500 text-white hover:bg-blue-600'
-    }`;
+    nextButton.className = `px-3 py-2 mx-1 rounded-md text-sm font-medium ${paginationInFO.currentPage === pageCount ? 'opacity-50 cursor-not-allowed' : 'bg-blue-500 text-white hover:bg-blue-600'
+        }`;
+
     nextButton.addEventListener('click', () => {
-        if (currentPage < pageCount) {
-            displayPage(currentPage + 1);
-            setupPagination();
+        if (paginationInFO.currentPage < pageCount) {
+            displayPage(paginationInFO.currentPage + 1, DataTOSeprate);
+            setupPagination(DataTOSeprate);
         }
     });
     paginationContainer.appendChild(nextButton);
 }
 
-// Initial load
-displayPage(1);
-setupPagination();
+
+
+export { displayPage, setupPagination }
 
 
 
