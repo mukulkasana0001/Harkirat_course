@@ -9,7 +9,7 @@
 import { paginationContainer, paginationInFO } from "./common.js";
 import { updateTableUI } from "./updateTableUI.js";
 
-
+ 
 
 // Function to display data for the current page
 function displayPage(page, DataTOSeprate) {

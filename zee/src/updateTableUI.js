@@ -1,5 +1,6 @@
-import { cancleSubmit, data, dataTable, form } from "./common.js"
+import { cancleSubmit, data, dataTable, form, paginationInFO } from "./common.js"
 import { editPreviousdata } from "./EditPreviousData.js";
+import { displayPage, setupPagination } from "./Pagination.js";
 
 function updateTableUI(datas) {
     console.log(datas)
@@ -32,10 +33,6 @@ function updateTableUI(datas) {
                      </th>
                 </tr>
               `;
-
-
-
-
     });
 
     const tablestr = `
@@ -66,11 +63,11 @@ function updateTableUI(datas) {
     dataTable.addEventListener("click", (e) => {
 
         let val = e.target.closest(".parent").querySelector(".targetID").textContent
-
+         console.log(val)
         const index = data.findIndex((item) => {
             return item.id == val
         })
-
+            console.log("index: ",index)
         //  delete current index
         if (e.target.classList.contains("removeData")) {
             alert("are you sure")
@@ -79,7 +76,9 @@ function updateTableUI(datas) {
 
             data.splice(index, 1)
             localStorage.setItem("data", JSON.stringify(data))
-            updateTableUI(data)
+            // updateTableUI(data)
+            displayPage(paginationInFO.currentPage, data);
+            setupPagination(data);
         }
 
         // exit current index
@@ -88,14 +87,18 @@ function updateTableUI(datas) {
                 cancleSubmit.classList.add("hidden")
             }
 
+           if (index == -1) return
+
             if (form.classList.contains("hidden")) {
                 form.classList.remove("hidden")
             }
-
+            
             editPreviousdata(index);
             data.splice(index, 1)
             localStorage.setItem("data", JSON.stringify(data))
-            updateTableUI(data)
+            // updateTableUI(data)
+            displayPage(paginationInFO.currentPage, data);
+            setupPagination(data)
         }
 
 

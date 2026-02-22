@@ -3,7 +3,7 @@ import { attendenceStatus, checkInTime, checkOutTime, data, date, department, em
 function editPreviousdata(index) {
 
     let toEditData = data[index]
-
+  console.log("edited",toEditData)
     persondata.personName = personName.value = toEditData.personName
     persondata.emailAddress = emailAddress.value = toEditData.emailAddress
     persondata.mobNumber = mobNumber.value = toEditData.mobNumber
