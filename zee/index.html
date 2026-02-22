@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="output.css" />
+    <script type="module" src="./src/index.js"></script>
+    <title>Smart Attendance</title>
+</head>
+
+<body class="bg-slate-900">
+
+    <div class="relative">
+
+        <!-- 🔷 HEADER -->
+        <div class="flex bg-slate-900 p-3 flex-col">
+
+            <div class="flex bg-slate-800 shadow-md shadow-black rounded-2xl flex-row justify-between p-5">
+
+                <div class="flex flex-row p-5 space-x-5">
+                    <div class="w-10 h-10 rounded-2xl mt-2 bg-blue-600 border"></div>
+
+                    <div>
+                        <h1 class="text-blue-800 text-2xl font-bold">Smart Attendence</h1>
+                        <p class="text-gray-500">Management System</p>
+                    </div>
+                </div>
+
+                <div class="flex flex-row space-x-3 p-2">
+
+                    <div class="rounded-2xl shadow-sm shadow-gray-500 bg-slate-800 text-gray-400 p-2">
+                        <div class="p-2">
+                            <h4 class="font-bold">Total Record</h4>
+                            <h3 class="totalRecord text-2xl text-white font-bold">4</h3>
+                        </div>
+                    </div>
+
+                    <div class="rounded-2xl shadow-sm shadow-gray-500 bg-slate-800 text-gray-400 p-2">
+                        <div class="p-2">
+                            <h4 class="font-bold">Present Today</h4>
+                            <h3 class=" totalPresent text-2xl font-bold text-green-600">4</h3>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <br />
+
+            <!-- 🔷 SEARCH + SORT -->
+            <div class="flex flex-row justify-between items-center">
+
+                <div class="w-full">
+                    <input type="text"
+                        class="bg-slate-800 px-5 p-2 outline text-gray-500 font-medium outline-gray-700 rounded w-1/2"
+                        id="search" placeholder="Search by name,email,departmant..." />
+                </div>
+
+                <div class="w-1/2 text-white px-5 p-2 text-sm font-medium rounded">
+
+                    <div class="flex flex-row space-x-2">
+
+                        <div class="flex flex-row space-x-2 items-center">
+                            <label for="sortBy">sort By:</label>
+
+                            <select class="bg-slate-800 p-2 px-4 rounded" name="sortBy" id="sortBy">
+                                <option value="date">Date (Newest)</option>
+                                <option value="attendenceStatus">Attendence</option>
+                            </select>
+                        </div>
+
+                        <div class="flex items-center">
+                            <button type="button"
+                                class=" addRecord rounded p-2 px-4 bg-purple-600 text-white font-bold text-sm">
+                                + Add Record
+                            </button>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 🔷 MODAL FORM -->
+        <div class="flex  z-1 absolute top-0 w-3/4 left-30 p-2 justify-center  flex-col space-y-3 rounded-2xl text-white">
+
+            <form class="hidden bg-slate-700 rounded-2xl ">
+
+                <!-- HEADER -->
+                <div class="flex flex-row justify-between p-10">
+                    <h1 class="text-2xl font-bold">Add Attendence Record</h1>
+                    <button class="removeTopUP" type="button">❌</button>
+                </div>
+
+                <hr />
+
+                <div class="p-8">
+
+                    <!-- ROW 1 -->
+                    <div class="flex flex-row justify-between space-x-3 p-3">
+
+                        <div class="flex flex-col w-1/2 p-1 space-y-2">
+                            <label for="personName">Person Name <sup>⭕</sup></label>
+                            <input class="outline  rounded bg-gray-600 p-2" name="personName" type="text"
+                                id="personName" required />
+                            <span class="hidden  error text-sm text-red-500">not found</span>
+                        </div>
+
+                        <div class="flex flex-col w-1/2 p-1 space-y-2">
+                            <label for="emailAddress">Email Address <sup>⭕</sup></label>
+                            <input class="outline rounded bg-gray-600 p-2" name="emailAddress" type="email"
+                                id="emailAddress" required />
+                            <span class=" hidden error text-sm text-red-500">not found</span>
+                        </div>
+
+                    </div>
+
+                    <!-- ROW 2 -->
+                    <div class="flex flex-row justify-between space-x-3 p-3">
+
+                        <div class="flex flex-col w-1/2 p-1 space-y-2">
+                            <label for="mobNumber">Mobile Number <sup>⭕</sup></label>
+                            <input class="outline rounded bg-gray-600 p-2" type="tel" name="mobNumber" id="mobNumber"
+                                required />
+                            <span class=" hidden error text-sm text-red-500">not found</span>
+                        </div>
+
+                        <div class="flex flex-col w-1/2 p-1 space-y-2">
+                            <label for="department">Department/Class <sup>⭕</sup></label>
+                            <input class="outline rounded bg-gray-600 p-2" type="text" name="department" id="department"
+                                required />
+                            <span class=" hidden  error text-sm text-red-500">not found</span>
+                        </div>
+
+                    </div>
+
+                    <!-- ROW 3 -->
+                    <div class="flex flex-row justify-between space-x-3 p-3">
+
+                        <div class="flex flex-col w-1/2 p-1 space-y-2">
+                            <label for="date">Date <sup>⭕</sup></label>
+                            <input class="outline rounded bg-gray-600 p-2" type="date" name="date" id="date" required />
+                            <span class=" hidden error text-sm text-red-500">not found</span>
+                        </div>
+
+                        <div class="flex flex-col w-1/2 p-1 space-y-2">
+                            <label for="checkInTime">Check-in Time <sup>⭕</sup></label>
+                            <input class="outline rounded bg-gray-600 p-2" type="time" name="checkInTime"
+                                id="checkInTime" required />
+                            <span class="hidden  error text-sm text-red-500">not found</span>
+                        </div>
+
+                    </div>
+
+                    <!-- ROW 4 -->
+                    <div class="flex flex-row justify-between space-x-3 p-3">
+
+                        <div class="flex flex-col w-1/2 p-1 space-y-2">
+                            <label for="checkOutTime">Check-out Time <sup>⭕</sup></label>
+                            <input class="outline rounded bg-gray-600 p-2" type="time" name="checkOutTime"
+                                id="checkOutTime" required />
+                            <span class=" hidden error text-sm text-red-500">not found</span>
+                        </div>
+
+                        <div class="flex flex-col w-1/2 p-1 space-y-2">
+                            <label for="attendenceStatus">Attendence Status <sup>⭕</sup></label>
+                            <select id="attendenceStatus" name="attendenceStatus" class="bg-gray-600 p-2 rounded">
+                                <option value="Present" selected>Present</option>
+                                <option value="Absent">Absent</option>
+                                <option value="Late">Late</option>
+                            </select>
+
+                        </div>
+
+                    </div>
+
+                    <hr />
+
+                    <!-- BUTTONS -->
+                    <div class="flex justify-end pt-4">
+                        <div class="flex flex-row space-x-3">
+
+                            <button type="button" class=" cancleSubmit bg-gray-600 px-6 p-3 rounded-md">
+                                Cancle
+                            </button>
+
+                            <input id="submit" type="submit" value="Save Record"
+                                class="bg-purple-600 font-bold px-6 p-3 rounded-md">
+
+                        </div>
+                    </div>
+
+                </div>
+
+            </form>
+        </div>
+
+
+
+        <!-- Table -->
+        <div class=" p-2 dataTable text-white overflow-x-auto overflow-y-hidden ">
+     
+             <table class=" text-left border">
+                <tr class=" flex flex-row border  space-x-9 p-2    ">
+                    <th class="w-50 ">Redord id </th>
+                    <th class="w-50 " >Person name</th>
+                    <th class="w-50 " >Email</th>
+                    <th class="w-50 " >mobile number</th>
+                    <th class="w-50 " >Department Class</th>
+                    <th class="w-50 " >Date</th>
+                    <th class="w-50 " >Check-in time</th>
+                    <th class="w-50 " >Check-out time</th>
+                    <th class="w-50 " >Status</th>
+                    
+                </tr>
+             </table>
+           
+
+        </div>
+
+        <div id="pagination-container" class="flex justify-center items-center gap-x-1">
+        <!-- Pagination buttons will be injected here by JavaScript -->
+       </div>
+
+    </div>
+
+</body>
+
+</html>
