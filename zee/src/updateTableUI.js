@@ -8,25 +8,25 @@ function updateTableUI(datas) {
     datas.forEach(item => {
         let color = ""
         if (item.attendenceStatus == "Present") {
-            color = 'bg-green-200'
+            color = 'bg-[#1a2a3a]'
         }
         if (item.attendenceStatus == "Absent") {
-            color = 'bg-red-200 '
+            color = 'bg-[#242537]'
         }
         if (item.attendenceStatus == "Late") {
-            color = 'bg-yellow-200'
+            color = 'bg-[#262a35]'
         }
-        str += `<tr class="flex parent  brightness-50 flex-row font-light  border ${color}  space-x-9 p-2 ">
+        str += `<tr class="flex parent border-b border-slate-700  flex-row font-light  border  ${color}  space-x-9 p-5 ">
                
                     <th class="w-50 targetID " >${item.id}</th>
-                    <th class="w-50" >${item.personName}</th>
-                    <th class="w-50" >${item.emailAddress}</th>
+                    <th class="w-30" >${item.personName}</th>
+                    <th class="w-60" >${item.emailAddress}</th>
                     <th class="w-50" >${item.mobNumber}</th>
-                    <th class="w-50 " >${item.department}</th>
-                    <th class="w-50" >${item.date}</th>
-                    <th class="w-50" >${item.checkInTime}</th>
-                    <th class="w-50" >${item.checkOutTime}</th>
-                    <th class="w-50" >${item.attendenceStatus}</th>
+                    <th class="w-30 " >${item.department}</th>
+                    <th class="w-30" >${item.date}</th>
+                    <th class="w-20" >${item.checkInTime}</th>
+                    <th class="w-20" >${item.checkOutTime}</th>
+                    <th class="w-20" >${item.attendenceStatus}</th>
                     <th class="w-20   flex flex-row justify-around " >
                         <button class=" editData border rounded border-red-500">🖋️</button>
                        <button class="  removeData  border rounded border-red-500">🚮</button>
@@ -35,27 +35,40 @@ function updateTableUI(datas) {
               `;
     });
 
+
+
     const tablestr = `
-     <table class=" text-left border">
+     <table class="  text-left border border-gray-700  text-slate-300 border-collapse  ">
                 <tr class=" flex flex-row border  space-x-9 p-2    ">
                     <th class="w-50 ">Redord id </th>
-                    <th class="w-50 " >Person name</th>
-                    <th class="w-50 " >Email</th>
+                    <th class="w-30 " >Person name</th>
+                    <th class="w-60 " >Email</th>
                     <th class="w-50 " >mobile number</th>
-                    <th class="w-50 " >Department Class</th>
-                    <th class="w-50 " >Date</th>
-                    <th class="w-50 " >Check-in time</th>
-                    <th class="w-50 " >Check-out time</th>
-                    <th class="w-50 " >Status</th>
-                    <th class="w-50 " >Action</th>
+                    <th class="w-30 " >Department Class</th>
+                    <th class="w-30 " >Date</th>
+                    <th class="w-20 " >Check-in time</th>
+                    <th class="w-20 " >Check-out time</th>
+                    <th class="w-20 " >Status</th>
+                    <th class="w-20 " >Action</th>
                 </tr>
                 ${str}
-                
             </table>
     `
+    
 
 
 
+
+          
+
+
+
+    
+
+
+
+
+    
 
     dataTable.innerHTML = tablestr
 
