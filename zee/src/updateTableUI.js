@@ -4,19 +4,41 @@ import { displayPage, setupPagination } from "./Pagination.js";
 
 function updateTableUI(datas) {
     console.log(datas)
+    console.log(datas.checkInTime)
+
+
+
+
+  
     let str = ""
     datas.forEach(item => {
+
+       let margine="";
+        let [hours, minutes] = item.checkInTime.split(":")
+        let pmam = ""
+        if (Number(hours) < 12) {
+            pmam = "AM"
+        } else {
+            pmam = "PM"
+        }
+        hours = (hours % 12)==0 ? 12 : hours%12 ;
+
+     console.log("h L",hours)
+
         let color = ""
         if (item.attendenceStatus == "Present") {
+            margine='';
             color = 'bg-[#1a2a3a]'
         }
         if (item.attendenceStatus == "Absent") {
+            margine='border-l-4 border-red-500';
             color = 'bg-[#242537]'
         }
         if (item.attendenceStatus == "Late") {
+            margine='border-l-4 border-yellow-600';
             color = 'bg-[#262a35]'
         }
-        str += `<tr class="flex parent border-b border-slate-700  flex-row font-light  border  ${color}  space-x-9 p-5 ">
+        str += `<tr class="flex ${margine}   parent flex-row font-light    ${color}  space-x-9 p-5 ">
                
                     <th class="w-50 targetID " >${item.id}</th>
                     <th class="w-30" >${item.personName}</th>
@@ -24,7 +46,7 @@ function updateTableUI(datas) {
                     <th class="w-50" >${item.mobNumber}</th>
                     <th class="w-30 " >${item.department}</th>
                     <th class="w-30" >${item.date}</th>
-                    <th class="w-20" >${item.checkInTime}</th>
+                    <th class="w-20" >${hours}:${minutes} ${pmam} </th>
                     <th class="w-20" >${item.checkOutTime}</th>
                     <th class="w-20" >${item.attendenceStatus}</th>
                     <th class="w-20   flex flex-row justify-around " >
@@ -54,21 +76,21 @@ function updateTableUI(datas) {
                 ${str}
             </table>
     `
-    
 
 
 
 
-          
-
-
-
-    
 
 
 
 
-    
+
+
+
+
+
+
+
 
     dataTable.innerHTML = tablestr
 
@@ -76,11 +98,11 @@ function updateTableUI(datas) {
     dataTable.addEventListener("click", (e) => {
 
         let val = e.target.closest(".parent").querySelector(".targetID").textContent
-         console.log(val)
+        console.log(val)
         const index = data.findIndex((item) => {
             return item.id == val
         })
-            console.log("index: ",index)
+        console.log("index: ", index)
         //  delete current index
         if (e.target.classList.contains("removeData")) {
             alert("are you sure")
@@ -100,12 +122,12 @@ function updateTableUI(datas) {
                 cancleSubmit.classList.add("hidden")
             }
 
-           if (index == -1) return
+            if (index == -1) return
 
             if (form.classList.contains("hidden")) {
                 form.classList.remove("hidden")
             }
-            
+
             editPreviousdata(index);
             data.splice(index, 1)
             localStorage.setItem("data", JSON.stringify(data))
