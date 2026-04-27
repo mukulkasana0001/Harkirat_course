@@ -5,7 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Shared.Const;
 using UI.Menu;
 using Utilities;
-using static Shared.Const.emuns;
+using static Shared.Const.emuns; 
 
 class Program
 {
@@ -13,7 +13,7 @@ class Program
     {
          string s = await EmailSender.SendOrderConfirmation( "mukulkasana0001@gmail.com");
         Console.WriteLine(s);
-        bool running = true;
+        bool running = true; 
         while (running)
         {
             if (!SessionManager.IsLoggedIn)
@@ -409,7 +409,213 @@ namespace UI.Menu
 
 
 
+///////////Cusstomer Repo 
 
+using DLL.MyDbcontext;
+using DLL.RepositoryInterface;
+using Microsoft.EntityFrameworkCore;
+using Shared.DTOs;
+using Shared.modal2;
+using System;
+using System.Collections.Generic;
+using System.Text;
+using Utilities;
+using static Shared.Const.emuns;
+
+namespace DLL.Repository
+{
+    public  class CustomerRepo: ICustomerRepo
+    {
+        public  async Task<List<viewMovieDTO>> ViewMoviesAsync()
+        {
+            using var db = new MovieBookingContext();
+
+            var movies = await db.Movies
+                .Where(m => m.IsActive)
+                .ToListAsync(); // ✅ async
+
+            return movies.Select(m => new viewMovieDTO
+            {
+                Id = m.Id,
+                Title = m.Title,
+                Genre = m.Genre,
+                Duration = m.Duration
+            }).ToList(); // ✅ FIX HERE
+        }
+
+        public  async Task<List<viewShowDTO>> viewShow(int id)
+        {
+
+            using var db = new MovieBookingContext();
+
+            var show = await db.Shows.Include(x => x.Theater).Where(s => s.MovieId == id).ToListAsync();
+
+            return show.Select(s => new viewShowDTO
+            {
+                Id = s.Id,
+                TheaterId = s.TheaterId,
+                TheaterName = s.Theater.Name,
+                TheaterLocation = s.Theater.Location,
+                TotalSeats = s.TotalSeats,
+                ShowTime = s.ShowTime,
+                TicketPrice = s.TicketPrice,
+                AvailableSeats = s.AvailableSeats
+            }).ToList();
+        }
+
+        public  async Task<string> BookTickets(int showId, string[] requestedSeats)
+        {
+
+            using var db = new MovieBookingContext();
+
+            using (var transaction = await db.Database.BeginTransactionAsync())
+            {
+                Console.WriteLine("inside repo ");
+                try
+                {
+                    // 1. Fetch Show and Lock Row for update to handle high concurrency
+                    var show = await db.Shows.FirstOrDefaultAsync(s => s.Id == showId);
+                    if (show == null) return "Show not found.";
+
+
+                    // 2. Rule: Cannot book more seats than available
+                    if (show.AvailableSeats < requestedSeats.Count())
+                    {
+                        return $"Only {show.AvailableSeats} seats available.";
+                    }
+
+                    // 3. Rule: Each seat must be unique (no duplicates in this booking)
+                    var uniqueSeats = requestedSeats.Distinct().ToList();
+                    if (uniqueSeats.Count != requestedSeats.Count())
+                    {
+                        return "Duplicate seat numbers requested.";
+                    }
+
+                    // 4. Rule: Each seat must be unique (check against DB - no double booking)
+                    var bookedSeats = await db.BookingDetails
+                        .Where(bd => bd.Booking.ShowId == showId &&
+                        bd.Booking.Status == Status.Booked &&
+                        uniqueSeats.Contains(bd.SeatNumber))
+                        .Select(bd => bd.SeatNumber).ToListAsync();
+
+                    // check that seat is already book or not
+                    if (bookedSeats.Any())
+                    {
+                        return $"Seats already booked: {string.Join(", ", bookedSeats)}";
+                    }
+
+
+                    //getting customer id 
+                    var customer = await db.Customers
+                        .FirstOrDefaultAsync(c => c.UserId == SessionManager.CurrentUserId);
+
+                    if (customer == null)
+                        return "Customer not found.";
+
+
+                    // 5. Create Booking
+                    var booking = new Booking
+                    {
+                        ShowId = showId,
+                        CustomerId = customer.Id,
+                        TotalAmount = show.TicketPrice * uniqueSeats.Count, // Rule: TotalAmount = TicketPrice × number of seats
+                        Status = Status.Booked,
+                        BookingDetails = uniqueSeats.Select(s => new BookingDetail { SeatNumber = s }).ToList()    // also add these sets to booking details dor that customer
+                    };
+
+                    await db.Bookings.AddAsync(booking);
+
+                    // 6. Rule: Reduce AvailableSeats after booking
+                    show.AvailableSeats -= uniqueSeats.Count();
+                    //await db.Shows.Update(show); // no need to update because ef already track Shows
+                    Console.WriteLine("before Save");
+                    // Commit changes
+                    await db.SaveChangesAsync();
+                    Console.WriteLine("before commit");
+                    await transaction.CommitAsync();
+
+                    return "Booking Successful!";
+                }
+                catch (Exception ex)
+                {
+                    await transaction.RollbackAsync();
+
+                    Console.WriteLine(ex.InnerException?.Message); // 🔥 IMPORTANT
+                    return $"Booking failed: {ex.InnerException?.Message ?? ex.Message}";
+                }
+            }
+        }
+
+        public  async Task<List<myBookingsDTO>> GetCustomerBookings()
+        {
+            
+            using var db = new MovieBookingContext();
+            var customer = await db.Customers
+                        .FirstOrDefaultAsync(c => c.UserId == SessionManager.CurrentUserId);
+
+            if (customer == null)
+                Console.WriteLine("Customer not found.");
+
+            var mybokings = await db.Bookings
+                        .Include(b => b.Show)               // Load Show details (Movie title, Time, etc.)
+                            .ThenInclude(s => s.Movie)      // Assuming Show has a Movie object
+                        .Include(b => b.BookingDetails)     // Load the Seats (A-10, A-11, etc.)
+                        .Where(b => b.CustomerId == customer.Id)
+                        .OrderByDescending(b => b.BookingTime) // Most recent first
+                        .ToListAsync();
+            Console.WriteLine(mybokings);
+            return mybokings.Select(x => new myBookingsDTO
+            {
+                Id = x.Id,
+                CustomerId = x.CustomerId,
+                BookingDetails = x.BookingDetails,
+                BookingTime = x.BookingTime,
+                Customer = x.Customer,
+                Status = x.Status,
+                Show = x.Show,
+                TotalAmount = x.TotalAmount,
+            }).ToList();
+
+        }
+
+        public  async Task<string> CancelBooking(int bookingId)
+        {
+
+            using var db = new MovieBookingContext();
+            var customer = await db.Customers
+                       .FirstOrDefaultAsync(c => c.UserId == SessionManager.CurrentUserId);
+
+            var booking = await db.Bookings
+                     .FirstOrDefaultAsync(b => b.Id == bookingId && b.CustomerId == customer.Id);
+
+            if (booking == null)
+            {
+                return "Booking not found or you do not have permission to cancel it.";
+            }
+
+            if (booking.Status == Status.Cancelled)
+            {
+                return "This booking is already cancelled.";
+            }
+
+            // 2. Count seats to restore
+            int seatsToRestore = await db.BookingDetails
+                .CountAsync(bd => bd.BookingId == bookingId);
+
+            // 3. Update Booking Status
+            booking.Status = Status.Cancelled;
+            // 4. Update Available Seats in Show
+            var show = await db.Shows.FirstOrDefaultAsync(s => s.Id == booking.ShowId);
+            if (show != null)
+            {
+                show.AvailableSeats += seatsToRestore;
+            }
+            // 5. Commit Changes
+            await db.SaveChangesAsync();
+            return $"Booking {bookingId} cancelled successfully. {seatsToRestore} seat(s) restored.";
+        }
+    }
+}
 
 /////////// EmailSender
 
